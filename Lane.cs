@@ -46,56 +46,59 @@ public class BowlingLane
         }
     }
 
-    public void MakeThrow(int power, int direction)
-{
-    int startColumn, endColumn;
+    public int MakeThrow(int power, int direction)
+    {
+        int pinsDownCount = 0;
+        int startColumn, endColumn;
 
-    // Definiera kolumner baserat på riktning
-    if (direction <= 25)       // Vänster
-    {
-        startColumn = 0;
-        endColumn = 1;  // Kolumner 0 och 1 ska träffas för Left
-    }
-    else if (direction <= 75)  // Mitten
-    {
-        startColumn = 1;
-        endColumn = 2;  // Kolumner 1 och 2 ska träffas för Straight
-    }
-    else                       // Höger
-    {
-        startColumn = 2;
-        endColumn = 3;  // Kolumner 2 och 3 ska träffas för Right
-    }
-
-    // Bestäm rader som påverkas beroende på kaststyrkan
-    int[] rowsToAffect;
-    if (power <= 40) // WeakPower
-    {
-        rowsToAffect = new int[] { 2, 3 };  // Svagt kast träffar bara raderna 0 och 1
-    }
-    else // StrongPower
-    {
-        rowsToAffect = new int[] { 0, 1, 2, 3 };  // Starkt kast träffar alla rader (0 till 3)
-    }
-
-    Console.WriteLine($"Throwing with power: {power} and aiming for columns: {startColumn}-{endColumn}");
-
-    // Påverka de valda kolumnerna och raderna
-    foreach (int row in rowsToAffect)
-    {
-        for (int col = startColumn; col <= endColumn; col++)
+        // Definiera kolumner baserat på riktning
+        if (direction <= 25)       // Vänster
         {
-            Coordinate pin = new Coordinate(row, col);
-            if (pins.Contains(pin))
+            startColumn = 0;
+            endColumn = 1;  // Kolumner 0 och 1 ska träffas för Left
+        }
+        else if (direction <= 75)  // Mitten
+        {
+            startColumn = 1;
+            endColumn = 2;  // Kolumner 1 och 2 ska träffas för Straight
+        }
+        else                       // Höger
+        {
+            startColumn = 2;
+            endColumn = 3;  // Kolumner 2 och 3 ska träffas för Right
+        }
+
+        // Bestäm rader som påverkas beroende på kaststyrkan
+        int[] rowsToAffect;
+        if (power <= 40) // WeakPower
+        {
+            rowsToAffect = new int[] { 2, 3 };  // Svagt kast träffar bara raderna 0 och 1
+        }
+        else // StrongPower
+        {
+            rowsToAffect = new int[] { 0, 1, 2, 3 };  // Starkt kast träffar alla rader (0 till 3)
+        }
+
+        Console.WriteLine($"Throwing with power: {power} and aiming for columns: {startColumn}-{endColumn}");
+
+        // Påverka de valda kolumnerna och raderna
+        foreach (int row in rowsToAffect)
+        {
+            for (int col = startColumn; col <= endColumn; col++)
             {
-                pins.Remove(pin);
-                Console.WriteLine($"Hit pin at column {col}, row {row}");
+                Coordinate pin = new Coordinate(row, col);
+                if (pins.Contains(pin))
+                {
+                    pins.Remove(pin);
+                    pinsDownCount++;
+                    Console.WriteLine($"Hit pin at column {col}, row {row}");
+                }
             }
         }
-    }
 
-    Print();  // Visa banan efter träffen
-}
+        Print();
+        return pinsDownCount;
+    }
 
     public bool AllPinsDown()
     {

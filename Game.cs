@@ -6,7 +6,9 @@ public class Game
     public Game()
     {
         lane = new BowlingLane();
-        player = new Player("Player 1", null, null);
+        IStrategy defaultStrategy = new StraightStrategy();
+        IThrow defaultPower = new WeakPower(defaultStrategy);
+        player = new Player("Player", defaultPower, defaultPower);  // Ändra här..?
     }
 
     public void PlayGame()
@@ -19,21 +21,32 @@ public class Game
 
             if (lane.AllPinsDown())
             {
-                Console.WriteLine("All pins are down! Game over!");
+                Console.WriteLine("All pins are down!");
+                player.PlayerScore.PrintScoreHistory();
                 break;
             }
 
             Console.WriteLine("\nDo you want to throw again? (y/n)");
             if (Console.ReadLine().ToLower() != "y")
+            {
+                player.PlayerScore.PrintScoreHistory();
                 break;
+            }
         }
 
+        // Använd iteratorn för att visa alla kast
+        Console.WriteLine("\nFinal throw-by-throw review:");
+        foreach (int score in player.PlayerScore)
+        {
+            Console.WriteLine($"Throw score: {score}");
+        }
+        
         Console.WriteLine("Game Over!");
     }
 
     private void PlayTurn()
     {
-        Console.WriteLine("\nChoose your direction:");
+        Console.WriteLine("\nChoose your strategy:");
         Console.WriteLine("1. Left");
         Console.WriteLine("2. Straight");
         Console.WriteLine("3. Right");
@@ -68,7 +81,7 @@ public class Game
             new WeakPower(direction) : 
             new StrongPower(direction);
 
-        player = new Player("Player 1", power, power);
+        player.UpdateThrowSettings(power, power);
         player.PerformThrow(lane);
     }
 }

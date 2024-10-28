@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Numerics;
 
-public interface IThrow 
+public interface IThrow  //IStrategy instansieras i IThrow, IThrow behöver IStrategy  
 {
      IStrategy Strategy { get; }
     public string Name { get; }
@@ -18,7 +18,7 @@ public interface IStrategy
     (bool hit, string result) Spin();
 }
 
-class WeakPower : IThrow
+class WeakPower : IThrow //Ev att göra power till samma klass: IPower
 {
     public string Name { get; private set; }
     public string Description { get; private set; }
@@ -126,45 +126,47 @@ class BackSpinStrategy : IStrategy
 }
 
 
-//Idrection som instansieras i Ithrw, Ithrow behöver Idirection  
-
-
 public class Player
 {
     public string Name { get; private set; }
     public IThrow PowerType { get; private set; }
     public IThrow StrategyType { get; private set; }
+    public Score PlayerScore { get; private set; }
 
     public Player(string playerName, IThrow powerType, IThrow strategyType)
     {
         Name = playerName;
         PowerType = powerType;
         StrategyType = strategyType;
+        PlayerScore = new Score(); // Initiera Score här
     }
 
-    //NewThrowLeft= new Direction(new Left());
-
-
-public void PerformThrow(BowlingLane lane)
-{
-    Console.WriteLine($"{Name} is preparing a throw with {PowerType.Name} power and aiming {StrategyType.Name}.");
-    
-    // Använd strategin för att bestämma om kastet träffar
-    var (hit, result) = PowerType.Strategy.Spin();
-    
-    if (hit)
+    public void UpdateThrowSettings(IThrow powerType, IThrow strategyType)
     {
-        Console.WriteLine($"The ball had good {result}!");
-        lane.MakeThrow(PowerType.Number, PowerType.Strategy.Number);
+        PowerType = powerType;
+        StrategyType = strategyType;
     }
-    else
+
+    public void PerformThrow(BowlingLane lane)
     {
-        Console.WriteLine($"The throw missed due to {result}!");
-        lane.Print();  // Visa banan även efter miss
+        Console.WriteLine($"{Name} is preparing a throw with {PowerType.Name} power and aiming {StrategyType.Name}.");
+        
+        var (hit, result) = PowerType.Strategy.Spin();
+        
+        if (hit)
+        {
+            Console.WriteLine($"The ball had good {result}!");
+            int pinsDown = lane.MakeThrow(PowerType.Number, PowerType.Strategy.Number);
+            PlayerScore.AddPoints(pinsDown);
+            Console.WriteLine($"Current score: {PlayerScore.GetTotalScore()}");
+        }
+        else
+        {
+            Console.WriteLine($"The throw missed due to {result}!");
+            lane.Print();
+        }
     }
 }
-}
-
 
 // public interface IDecisionEngine
 // {
