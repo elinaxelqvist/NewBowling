@@ -97,6 +97,10 @@ public class BowlingLane
     Print();  // Visa banan efter träffen
 }
 
+    public bool AllPinsDown()
+    {
+        return pins.Count == 0;
+    }
 
     public struct Coordinate
     {
