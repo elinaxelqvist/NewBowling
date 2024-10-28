@@ -13,7 +13,7 @@ public class Game
 
     public void PlayGame()
     {
-        lane.Print();
+        lane.Print(player.PlayerScore);  // Skicka med Score-objektet
 
         while (true)
         {
@@ -22,14 +22,14 @@ public class Game
             if (lane.AllPinsDown())
             {
                 Console.WriteLine("All pins are down!");
-                player.PlayerScore.PrintScoreHistory();
+                lane.Print(player.PlayerScore);  // Uppdatera med aktuell poäng
                 break;
             }
 
             Console.WriteLine("\nDo you want to throw again? (y/n)");
             if (Console.ReadLine().ToLower() != "y")
             {
-                player.PlayerScore.PrintScoreHistory();
+                lane.Print(player.PlayerScore);  // Uppdatera med aktuell poäng
                 break;
             }
         }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;  // Lägg till denna för Average och Max
 
 public class Score : IEnumerable<int>
 {

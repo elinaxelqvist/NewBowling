@@ -18,8 +18,11 @@ public class BowlingLane
         };
     }
 
-    public void Print()
+    public void Print(Score score = null)
     {
+        Console.WriteLine("\nBowling Lane:");
+        
+        // Skriv ut kolumnnummer
         Console.Write("  ");
         for (int j = 0; j < 4; j++)
         {
@@ -27,8 +30,9 @@ public class BowlingLane
             Console.Write($" {j}");
             Console.ResetColor();
         }
-        Console.WriteLine();
+        Console.WriteLine();  // Ny rad efter kolumnnummer
 
+        // Skriv ut spelplanen med radnummer och käglor
         for (int i = 0; i < 4; i++)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -41,6 +45,23 @@ public class BowlingLane
                     Console.Write(" X");
                 else
                     Console.Write(" •");
+            }
+
+            // Lägg till poänginfo till höger
+            if (score != null)
+            {
+                switch(i)
+                {
+                    case 0:
+                        Console.Write($"     Current Score: {score.GetTotalScore()}");
+                        break;
+                    case 1:
+                        Console.Write($"     Best Throw: {score.GetHighestScore()}");
+                        break;
+                    case 2:
+                        Console.Write($"     Average: {score.GetAverageScore():F1}");
+                        break;
+                }
             }
             Console.WriteLine();
         }
